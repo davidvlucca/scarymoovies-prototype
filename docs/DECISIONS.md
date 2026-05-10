@@ -88,6 +88,23 @@
 
 ---
 
+## Data Access / Security Model
+
+### Supabase client for user-owned mutations; Drizzle for server-trusted reads
+
+**Decision:** Server Actions that perform user-owned mutations (insert/update/delete on `ratings`, `reviews`, `watchlist_items`, `tier_list_entries`, `collection_films`, `collections`) must use `supabase.from('table').*` via `createClient()` from `lib/supabase/server.ts`. They must NOT call `lib/queries/*` write functions or import `db` from `db/index.ts` directly.
+
+**Why:** `db` (Drizzle, via `DATABASE_URL`) connects as the postgres superuser role, which has `BYPASSRLS`. Every Drizzle write silently skips all 33 RLS policies — `auth.uid()` is never set in the Postgres session. The Supabase client sends the user's JWT through PostgREST, which sets `auth.uid()` correctly and enforces RLS on every operation.
+
+**Consequences:**
+- `app/actions/ratings.ts`, `reviews.ts`, `watchlist.ts`, `tier-list.ts` → Supabase client only for mutations.
+- `lib/queries/*` write functions (`upsertRating`, `upsertReview`, `addToWatchlist`, etc.) are admin/script-only — they bypass RLS by design. Do not call them from Server Actions.
+- `lib/queries/*` read functions are safe to use from Server Components (RSC reads trusted server code; WHERE clauses use JWT-derived user IDs from prior auth checks).
+- `db` may be used from Server Components for typed reads. Never from Server Actions for user-scoped writes.
+- S8 RLS tests must use the Supabase client path, not Drizzle, to validate policy enforcement.
+
+---
+
 ## S2–S8 Conservative Assumptions
 
 - **Tier list gate:** A film must have a `ratings` row for the authenticated user before it can be added to `tier_list_entries`. Enforced in Server Action, not just UI.
