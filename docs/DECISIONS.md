@@ -17,6 +17,11 @@
 **Why:** Claude cannot access the Supabase or Google Cloud dashboards directly.
 **Consequence:** S4-03 is blocked until this is done. S4-01/S4-02 can proceed independently. The Google button on `/auth/sign-in` is `disabled` until credentials are confirmed. Stop Point 2 is not fully approved until Google OAuth is verified.
 
+### getOrigin() uses NEXT_PUBLIC_SITE_URL env var with header fallback
+**Decision:** `getOrigin()` in `app/actions/auth.ts` checks `process.env.NEXT_PUBLIC_SITE_URL` first. Falls back to request headers (`x-forwarded-proto` + `x-forwarded-host` / `host`). Proto header is split on `,` to handle load-balancer multi-value format.
+**Why:** Supabase ignores `emailRedirectTo` if it doesn't match its allowlist, falling back to Site URL root (`/`). Explicit env var eliminates reliance on proxy header accuracy.
+**Consequence:** Set `NEXT_PUBLIC_SITE_URL=https://scarymoovies-prototype.vercel.app` in Vercel env vars. Local dev works without it (headers are correct in `next dev`). Also requires `/auth/callback` in Supabase's Redirect URLs allowlist.
+
 ### Signup email verification lands on `/profile/me` placeholder
 **Decision:** `signUp()` sets `emailRedirectTo` to `${origin}/auth/callback?next=/profile/me`. After clicking the verification email, users land on `/profile/me`.
 **Why:** PLAN.md Stop Point 2 requires "signup → email verification → profile lands." `/profile/me` is a minimal protected placeholder (shows user email) until S5-05 implements the full profile.

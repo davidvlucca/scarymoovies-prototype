@@ -4,13 +4,16 @@ import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 
 async function getOrigin(): Promise<string> {
+  // Explicit env var takes priority — set NEXT_PUBLIC_SITE_URL in Vercel project settings
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
+  }
   const h = await headers()
-  const forwardedProto = h.get('x-forwarded-proto') ?? 'http'
+  // x-forwarded-proto can be a comma-separated list (e.g. "https,http") behind load balancers
+  const proto = (h.get('x-forwarded-proto') ?? 'http').split(',')[0].trim()
   const forwardedHost = h.get('x-forwarded-host')
   const host = h.get('host') ?? 'localhost:3000'
-  return forwardedHost
-    ? `${forwardedProto}://${forwardedHost}`
-    : `${forwardedProto}://${host}`
+  return `${proto}://${forwardedHost ?? host}`
 }
 
 // ─── Sign Up ───────────────────────────────────────────

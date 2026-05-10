@@ -39,11 +39,39 @@ This is explicitly documented as a temporary state — not a bug.
 |---|---|---|
 | Add Google OAuth credentials to Supabase Auth → Providers → Google | Stop Point 2 | **No — BLOCKING** |
 | Remove `disabled` from Google button in `app/auth/sign-in/page.tsx` | Stop Point 2 | No (after above) |
-| Verify signup → email → `/profile/me` flow in browser | Stop Point 2 | Pending operator |
-| Verify login / logout in browser | Stop Point 2 | Pending operator |
-| Verify password reset email + complete in browser | Stop Point 2 | Pending operator |
+| Set `NEXT_PUBLIC_SITE_URL` in Vercel project env vars | Auth robustness | See note below |
+| Supabase → Authentication → URL Configuration — see note below | Auth routing | In progress |
+| Verify signup → email → `/profile/me` flow in browser | Stop Point 3 | Re-test after URL config |
+| Verify magic link flow in browser | Stop Point 3 | Re-test after URL config |
+| Verify password reset email + complete in browser | Stop Point 3 | Re-test after URL config |
 | Verify production URL returns 200 on commit `4719059` | S1 sign-off | Assumed yes (operator proceeded) |
 | Monitor Vercel deploys for each Phase A/B/C push | ongoing | — |
+
+### Supabase URL Configuration (required for email links to reach /auth/callback)
+
+Supabase → Authentication → URL Configuration must have:
+
+**Site URL:**
+- Production: `https://scarymoovies-prototype.vercel.app`
+
+**Redirect URLs (allowlist):**
+```
+https://scarymoovies-prototype.vercel.app/**
+https://scarymoovies-prototype.vercel.app/auth/callback
+http://localhost:3000/**
+http://localhost:3000/auth/callback
+```
+
+Without `/auth/callback` in the allowlist, Supabase falls back to the Site URL root (`/`) and the auth code exchange never happens.
+
+### NEXT_PUBLIC_SITE_URL env var (recommended for production)
+
+Add to Vercel project settings → Environment Variables:
+```
+NEXT_PUBLIC_SITE_URL = https://scarymoovies-prototype.vercel.app
+```
+
+`getOrigin()` in `app/actions/auth.ts` checks this var first, falling back to request headers. This ensures `emailRedirectTo` is always correct regardless of proxy header behavior.
 
 ---
 
