@@ -13,9 +13,7 @@ interface MobileMenuProps {
 }
 
 const navLinks: { label: string; href: string }[] = [
-  { label: 'Home', href: '/' },
   { label: 'Explore', href: '/explore' },
-  { label: 'Pick Your Fear', href: '/pick-your-fear' },
   { label: 'Collections', href: '/collections' },
 ]
 
@@ -41,11 +39,18 @@ export function MobileMenu({ open, onClose, user }: MobileMenuProps) {
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className="py-4 px-2 text-base uppercase tracking-wide border-b border-border-subtle text-text-secondary hover:text-text-primary transition-colors duration-150"
+              className="py-4 px-2 text-base uppercase tracking-widest border-b border-border-subtle text-text-secondary hover:text-text-primary transition-colors duration-150"
             >
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/pick-your-fear"
+            onClick={onClose}
+            className="py-4 px-2 text-base uppercase tracking-widest border-b border-border-subtle text-accent font-bold hover:opacity-80 transition-opacity duration-150"
+          >
+            Pick Your Fear
+          </Link>
 
           {user ? (
             <>

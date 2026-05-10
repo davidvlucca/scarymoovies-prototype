@@ -20,35 +20,37 @@ export function ExploreClient({ films, genres }: Props) {
   const moodGenres = getMoodGenres(selectedMood)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 flex flex-col gap-10">
+    <div className="flex flex-col">
       {/* Page header */}
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-text-muted">Browse</p>
-        <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-text-primary">
-          Explore
-        </h1>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12 pb-8 w-full">
+        <p className="text-xs uppercase tracking-widest text-text-muted mb-2">Discover</p>
+        <h1 className="text-4xl md:text-6xl font-black uppercase text-text-primary">All Horror</h1>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-6 border-t border-border-subtle pt-6">
-        <GenreFilter
-          genres={genres}
-          selected={selectedGenre}
-          onChange={setSelectedGenre}
-        />
-        <MoodFilter
-          selected={selectedMood}
-          onChange={setSelectedMood}
-        />
+      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full mb-10">
+        <div className="bg-bg-surface rounded-lg p-4 flex flex-col gap-6">
+          <GenreFilter
+            genres={genres}
+            selected={selectedGenre}
+            onChange={setSelectedGenre}
+          />
+          <MoodFilter
+            selected={selectedMood}
+            onChange={setSelectedMood}
+          />
+        </div>
       </div>
 
       {/* Film grid */}
-      <FilmGrid
-        films={films}
-        selectedGenre={selectedGenre}
-        selectedMood={selectedMood}
-        moodGenres={moodGenres}
-      />
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pb-24 w-full">
+        <FilmGrid
+          films={films}
+          selectedGenre={selectedGenre}
+          selectedMood={selectedMood}
+          moodGenres={moodGenres}
+        />
+      </div>
     </div>
   )
 }

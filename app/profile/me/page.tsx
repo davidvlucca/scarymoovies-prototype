@@ -20,7 +20,7 @@ export default async function ProfileMePage() {
 
   if (!profile) {
     return (
-      <div className="max-w-2xl mx-auto px-4 md:px-8 py-16">
+      <div className="max-w-4xl mx-auto px-4 md:px-8 py-16">
         <p className="text-text-secondary text-sm">
           Your profile is being set up. Try again in a moment.
         </p>
@@ -64,7 +64,7 @@ export default async function ProfileMePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 md:px-8 py-10 flex flex-col gap-8">
+    <div className="max-w-4xl mx-auto px-4 md:px-8 py-10 flex flex-col gap-8">
       <ProfileHeader profile={profile} isOwnProfile={true} />
       <ProfileTabs
         isOwnProfile={true}

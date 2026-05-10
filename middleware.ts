@@ -48,6 +48,23 @@ function writeChunkedCookie(response: NextResponse, value: string) {
 // Uses only fetch + next/server — no @supabase/* imports — so it is safe
 // to run in the Vercel Edge runtime.
 export async function middleware(request: NextRequest) {
+  // Defensive: Supabase occasionally delivers auth codes to the Site URL root
+  // instead of /auth/callback when the allowlist is misconfigured. Catch it here
+  // so the code exchange happens regardless of where Supabase sends the link.
+  if (
+    request.nextUrl.searchParams.has('code') &&
+    request.nextUrl.pathname !== '/auth/callback'
+  ) {
+    const dest = request.nextUrl.clone()
+    const code = dest.searchParams.get('code')!
+    const next = request.nextUrl.pathname !== '/'
+      ? `&next=${encodeURIComponent(request.nextUrl.pathname)}`
+      : ''
+    dest.pathname = '/auth/callback'
+    dest.search = `?code=${encodeURIComponent(code)}${next}`
+    return NextResponse.redirect(dest)
+  }
+
   const response = NextResponse.next({ request })
 
   try {

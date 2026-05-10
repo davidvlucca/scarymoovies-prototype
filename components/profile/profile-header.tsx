@@ -13,30 +13,33 @@ export function ProfileHeader({ profile, isOwnProfile }: Props) {
   const initial = profile.username.charAt(0).toUpperCase()
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-start gap-4">
+    <div className="flex flex-col gap-8">
+      <div className="flex items-start gap-6">
         {/* Avatar */}
-        <div className="relative w-16 h-16 flex-shrink-0">
+        <div className="relative w-20 h-20 flex-shrink-0">
           {profile.avatar_url ? (
             <Image
               src={profile.avatar_url}
               alt={profile.username}
               fill
-              sizes="64px"
+              sizes="80px"
               className="object-cover rounded-full"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-bg-elevated flex items-center justify-center">
-              <span className="text-text-primary text-xl font-bold select-none">{initial}</span>
+            <div className="w-20 h-20 rounded-full bg-bg-elevated flex items-center justify-center border border-border-subtle">
+              <span className="text-text-primary text-2xl font-black select-none uppercase">{initial}</span>
             </div>
           )}
         </div>
 
         {/* Info */}
-        <div className="flex flex-col gap-1 min-w-0 flex-1 pt-1">
-          <h1 className="text-2xl font-bold text-text-primary">@{profile.username}</h1>
+        <div className="flex flex-col gap-2 min-w-0 flex-1 pt-1">
+          <p className="text-xs uppercase tracking-widest text-text-muted">Profile</p>
+          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-text-primary leading-none">
+            @{profile.username}
+          </h1>
           {profile.bio && (
-            <p className="text-text-secondary text-sm leading-relaxed">{profile.bio}</p>
+            <p className="text-text-secondary text-sm leading-relaxed mt-1">{profile.bio}</p>
           )}
         </div>
 
@@ -47,7 +50,7 @@ export function ProfileHeader({ profile, isOwnProfile }: Props) {
               href="/profile/me/edit"
               aria-disabled="true"
               tabIndex={-1}
-              className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-text-muted border border-border-subtle cursor-not-allowed opacity-60 pointer-events-none"
+              className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-text-muted border border-border-subtle cursor-not-allowed opacity-60 pointer-events-none uppercase tracking-widest"
             >
               Edit Profile
             </Link>

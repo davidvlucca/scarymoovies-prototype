@@ -11,7 +11,7 @@ export function CollectionCard({ collection }: Props) {
   return (
     <Link
       href={`/collections/${collection.id}`}
-      className="group flex flex-col gap-3 p-5 rounded-lg bg-bg-surface border border-border-subtle hover:border-border transition-colors duration-150"
+      className="group flex flex-col gap-3 p-5 rounded-lg bg-bg-surface border border-border-subtle border-l-2 border-l-transparent hover:border-l-accent hover:border-border transition-colors duration-150"
     >
       {/* Title */}
       <h2 className="text-text-primary font-bold text-base leading-snug group-hover:text-accent transition-colors duration-150">
