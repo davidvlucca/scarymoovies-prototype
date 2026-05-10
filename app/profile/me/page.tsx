@@ -1,23 +1,80 @@
 import { requireAuth } from '@/lib/auth-guard'
+import { db } from '@/db/index'
+import { users, reviews, watchlistItems, films, tierLists, tierListEntries } from '@/db/schema'
+import { eq, desc, asc } from 'drizzle-orm'
+import { getTableColumns } from 'drizzle-orm'
+import { listCollections } from '@/lib/queries/collections'
+import { getUserRatings } from '@/lib/queries/ratings'
+import { ProfileHeader } from '@/components/profile/profile-header'
+import { ProfileTabs } from '@/components/profile/profile-tabs'
 
 export default async function ProfileMePage() {
-  const user = await requireAuth()
+  const authUser = await requireAuth()
 
-  return (
-    <div className="max-w-2xl mx-auto px-4 md:px-8 py-16">
-      <div className="space-y-2">
-        <p className="text-xs uppercase tracking-widest text-text-muted">Your profile</p>
-        <h1 className="text-2xl font-bold text-text-primary">
-          {(user.user_metadata?.full_name as string | undefined) ?? user.email}
-        </h1>
-        <p className="text-text-secondary text-sm">{user.email}</p>
-      </div>
+  // Look up public profile row
+  const profileRows = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, authUser.id))
+    .limit(1)
+  const profile = profileRows[0]
 
-      <div className="mt-12 border-t border-border-subtle pt-8">
-        <p className="text-text-muted text-sm">
-          Full profile — tier list, reviews, watchlist, collections — arrives in Phase C.
+  if (!profile) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 md:px-8 py-16">
+        <p className="text-text-secondary text-sm">
+          Your profile is being set up. Try again in a moment.
         </p>
       </div>
+    )
+  }
+
+  // Load all tab data in parallel
+  const [userReviews, watchlistWithFilms, userCollections] = await Promise.all([
+    db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.user_id, authUser.id))
+      .orderBy(desc(reviews.created_at))
+      .limit(20),
+    db
+      .select({ ...getTableColumns(watchlistItems), film: films })
+      .from(watchlistItems)
+      .innerJoin(films, eq(watchlistItems.film_id, films.id))
+      .where(eq(watchlistItems.user_id, authUser.id))
+      .orderBy(desc(watchlistItems.added_at))
+      .limit(50),
+    listCollections({ userId: authUser.id }),
+    getUserRatings(authUser.id),
+  ])
+
+  // Load tier list entries for this user
+  const tierListRows = await db
+    .select()
+    .from(tierLists)
+    .where(eq(tierLists.user_id, authUser.id))
+    .limit(1)
+
+  let tierEntries: (typeof tierListEntries.$inferSelect & { film: typeof films.$inferSelect })[] = []
+  if (tierListRows[0]) {
+    tierEntries = await db
+      .select({ ...getTableColumns(tierListEntries), film: films })
+      .from(tierListEntries)
+      .innerJoin(films, eq(tierListEntries.film_id, films.id))
+      .where(eq(tierListEntries.tier_list_id, tierListRows[0].id))
+      .orderBy(asc(tierListEntries.position))
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 md:px-8 py-10 flex flex-col gap-8">
+      <ProfileHeader profile={profile} isOwnProfile={true} />
+      <ProfileTabs
+        isOwnProfile={true}
+        reviews={userReviews}
+        watchlistWithFilms={watchlistWithFilms}
+        collections={userCollections}
+        tierEntries={tierEntries}
+      />
     </div>
   )
 }
