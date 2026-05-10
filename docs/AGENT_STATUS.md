@@ -9,9 +9,9 @@
 
 | Task ID | Title | Status | Files Changed | Tests Run | Blockers | Decisions | Handoff Notes | Result |
 |---|---|---|---|---|---|---|---|---|
-| S2-01 | Layout shell | pending | — | — | — | — | — | — |
-| S2-02 | Token audit | pending | — | — | — | — | — | — |
-| S2-03 | Home placeholder | pending | — | — | — | — | — | — |
+| S2-01 | Layout shell | done | app/layout.tsx, components/layout/navbar.tsx, components/layout/mobile-menu.tsx | — | — | — | — | navbar, skip-link, main#main-content |
+| S2-02 | Token audit | done | app/globals.css | — | — | — | — | 116 verified, 22 added (--leading-*, --tracking-*) |
+| S2-03 | Home placeholder | done | app/page.tsx | — | — | — | — | hero + 3 placeholder sections |
 | S4-01 | Auth pages | pending | — | — | — | — | — | — |
 | S4-04 | Auth state / guard | pending | — | — | — | — | — | — |
 | S5-01 | Home (real data) | pending | — | — | — | — | — | — |
@@ -28,10 +28,10 @@
 
 | Task ID | Title | Status | Files Changed | Tests Run | Blockers | Decisions | Handoff Notes | Result |
 |---|---|---|---|---|---|---|---|---|
-| S3-01 | lib/tmdb.ts | pending | — | — | — | — | — | — |
-| S3-02 | lib/queries/* | pending | — | — | — | — | — | — |
-| S3-03 | Server Actions | pending | — | — | — | — | — | — |
-| S3-04 | TanStack Query provider | pending | — | — | — | — | — | — |
+| S3-01 | lib/tmdb.ts | done | lib/tmdb.ts | — | — | — | — | fetchFilm/Films/Trending/search, typed, server-only |
+| S3-02 | lib/queries/* | done | lib/queries/films.ts, ratings.ts, reviews.ts, watchlist.ts, collections.ts | — | — | — | — | upsertRating uses onConflictDoUpdate; upsertReview uses check-then-update; getCollection uses getTableColumns |
+| S3-03 | Server Actions | done | app/actions/ratings.ts, reviews.ts, watchlist.ts | — | — | — | — | use server + Zod + auth check; delete ops use static db imports |
+| S3-04 | TanStack Query provider | done | app/providers.tsx, app/layout.tsx | — | — | — | — | QueryClientProvider + Toaster; layout wrapped |
 | S4-02 | Auth Server Actions | pending | — | — | — | — | — | — |
 | S4-03 | Google OAuth | pending | — | — | — | — | — | — |
 | S7-02 | Tier list actions | pending | — | — | — | — | — | — |
