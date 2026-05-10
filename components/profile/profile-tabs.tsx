@@ -58,8 +58,8 @@ export function ProfileTabs(props: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Tab bar */}
-      <div className="flex border-b border-border-subtle">
+      {/* Tab bar — scrollable on mobile */}
+      <div className="flex border-b border-border-subtle overflow-x-auto">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id
           return (
@@ -68,7 +68,7 @@ export function ProfileTabs(props: Props) {
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={[
-                'px-4 py-2 text-sm font-medium transition-colors duration-150 border-b-2 -mb-px',
+                'px-4 py-2 text-sm font-medium transition-colors duration-150 border-b-2 -mb-px whitespace-nowrap shrink-0',
                 isActive
                   ? 'border-accent text-text-primary'
                   : 'border-transparent text-text-muted hover:text-text-secondary',

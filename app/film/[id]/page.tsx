@@ -6,9 +6,7 @@ import { getCurrentUserReview, getFilmReviews } from '@/app/actions/reviews'
 import { getWatchlistStatus } from '@/app/actions/watchlist'
 import { getCurrentTierEntry } from '@/app/actions/tier-list'
 import { FilmHero } from '@/components/film/film-hero'
-import { RatingPanel } from '@/components/film/rating-panel'
-import { WatchlistButton } from '@/components/film/watchlist-button'
-import { TierPicker } from '@/components/film/tier-picker'
+import { FilmSidePanel } from '@/components/film/film-side-panel'
 import { ReviewForm } from '@/components/film/review-form'
 import { ReviewList } from '@/components/film/review-list'
 import Link from 'next/link'
@@ -89,18 +87,12 @@ export default async function FilmDetailPage({ params }: Props) {
           {/* Right column — rating + watchlist */}
           <aside className="w-full md:w-64 shrink-0 space-y-4">
             {user ? (
-              <>
-                <RatingPanel filmId={film.id} initialRating={currentRating} />
-                <WatchlistButton
-                  filmId={film.id}
-                  initialInWatchlist={inWatchlist}
-                />
-                <TierPicker
-                  filmId={film.id}
-                  initialTier={currentTier}
-                  hasRating={currentRating !== null}
-                />
-              </>
+              <FilmSidePanel
+                filmId={film.id}
+                initialRating={currentRating}
+                initialInWatchlist={inWatchlist}
+                initialTier={currentTier}
+              />
             ) : (
               <div className="rounded-lg border border-border-subtle px-4 py-5 text-sm space-y-2 bg-bg-surface">
                 <p className="text-xs uppercase tracking-widest text-text-muted">

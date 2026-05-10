@@ -67,6 +67,57 @@ export async function moveTierEntry(
   return addToTierList(filmId, newTier)
 }
 
+export async function reorderTierEntry(
+  filmId: number,
+  tier: 'S' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F',
+  direction: 'left' | 'right',
+): Promise<{ data: true } | { error: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+
+  const { data: tierList } = await supabase
+    .from('tier_lists')
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (!tierList) return { error: 'No tier list found.' }
+
+  const { data: entries, error: fetchError } = await supabase
+    .from('tier_list_entries')
+    .select('id, film_id, position')
+    .eq('tier_list_id', (tierList as { id: number }).id)
+    .eq('tier', tier)
+    .order('position', { ascending: true })
+
+  if (fetchError || !entries) return { error: 'Could not fetch tier entries.' }
+
+  type Row = { id: number; film_id: number; position: number }
+  const rows = entries as Row[]
+  const idx = rows.findIndex((e) => e.film_id === filmId)
+  if (idx === -1) return { error: 'Film not in this tier.' }
+
+  const swapIdx = direction === 'left' ? idx - 1 : idx + 1
+  if (swapIdx < 0 || swapIdx >= rows.length) return { data: true as const }
+
+  const cur = rows[idx]
+  const swap = rows[swapIdx]
+
+  const { error: e1 } = await supabase
+    .from('tier_list_entries')
+    .update({ position: swap.position })
+    .eq('id', cur.id)
+  if (e1) return { error: e1.message }
+
+  const { error: e2 } = await supabase
+    .from('tier_list_entries')
+    .update({ position: cur.position })
+    .eq('id', swap.id)
+  if (e2) return { error: e2.message }
+
+  return { data: true as const }
+}
+
 export async function getCurrentTierEntry(
   filmId: number,
 ): Promise<{ data: { tier: string } | null }> {

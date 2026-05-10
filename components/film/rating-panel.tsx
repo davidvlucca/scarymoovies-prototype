@@ -7,11 +7,12 @@ import { rateFilm } from '@/app/actions/ratings'
 type Props = {
   filmId: number
   initialRating: { score: string; tier: string | null } | null
+  onRated?: () => void
 }
 
 const SCORES = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
 
-export function RatingPanel({ filmId, initialRating }: Props) {
+export function RatingPanel({ filmId, initialRating, onRated }: Props) {
   const [currentScore, setCurrentScore] = useState<number | null>(
     initialRating ? parseFloat(initialRating.score) : null,
   )
@@ -25,6 +26,7 @@ export function RatingPanel({ filmId, initialRating }: Props) {
       } else {
         setCurrentScore(parseFloat(result.data.score))
         toast.success('Rating saved.')
+        onRated?.()
       }
     })
   }

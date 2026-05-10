@@ -14,20 +14,20 @@ export function ProfileHeader({ profile, isOwnProfile }: Props) {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex items-start gap-6">
+      <div className="flex items-start gap-4 md:gap-6">
         {/* Avatar */}
-        <div className="relative w-20 h-20 flex-shrink-0">
+        <div className="relative w-14 h-14 md:w-20 md:h-20 flex-shrink-0">
           {profile.avatar_url ? (
             <Image
               src={profile.avatar_url}
               alt={profile.username}
               fill
-              sizes="80px"
+              sizes="(max-width: 768px) 56px, 80px"
               className="object-cover rounded-full"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-bg-elevated flex items-center justify-center border border-border-subtle">
-              <span className="text-text-primary text-2xl font-black select-none uppercase">{initial}</span>
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-bg-elevated flex items-center justify-center border border-border-subtle">
+              <span className="text-text-primary text-xl md:text-2xl font-black select-none uppercase">{initial}</span>
             </div>
           )}
         </div>
@@ -35,7 +35,7 @@ export function ProfileHeader({ profile, isOwnProfile }: Props) {
         {/* Info */}
         <div className="flex flex-col gap-2 min-w-0 flex-1 pt-1">
           <p className="text-xs uppercase tracking-widest text-text-muted">Profile</p>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-text-primary leading-none">
+          <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-text-primary leading-none break-all">
             @{profile.username}
           </h1>
           {profile.bio && (
