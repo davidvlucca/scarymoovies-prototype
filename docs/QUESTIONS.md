@@ -1,40 +1,40 @@
-# Open Questions — S1
+# Open Questions
 
-## Resolved
+---
 
-### Production 500 (MIDDLEWARE_INVOCATION_FAILED) — fixed
-**Root cause:** `@supabase/ssr@0.10.3` (via `@supabase/supabase-js@2.105.x`) imports a
-Node.js built-in (likely `crypto`) at module load time. Vercel's Edge runtime rejects
-the module on initialisation, so even a try/catch around the function call cannot help.
+## Blocking
 
-**Fix:** Middleware rewritten using only `fetch` + `next/server`. No `@supabase/*`
-imports in `middleware.ts`. Session refresh calls the Supabase REST endpoint directly
-(`/auth/v1/token?grant_type=refresh_token`). `@supabase/ssr` is retained as a
-dependency for Server Components and Server Actions, which run in Node.js runtime.
+_None at this time. S1 is fully approved._
 
-### Production 404 (NOT_FOUND) — fixed
-**Root cause:** Vercel project was linked before any Next.js app existed; it may have
-auto-detected the wrong framework or root directory.
+---
 
-**Fix:** Added `vercel.json` with `"framework": "nextjs"` to force correct detection.
+## Non-Blocking Follow-Ups
 
-### Supabase SQL migrations (manual) — pending your action
-Apply via the Supabase SQL editor (not Drizzle) in this order:
-1. `supabase/migrations/auth-trigger.sql` — user creation trigger (idempotent: DROP IF EXISTS added)
-2. `supabase/migrations/rls.sql` — RLS enable + all per-operation policies
+### Google OAuth credentials (S4-03)
+S4-03 requires Google Cloud OAuth Client ID + Secret added to the Supabase Auth dashboard.
+This is a manual step by the operator — not a code task.
+S4-01 and S4-02 can proceed without it; only the Google OAuth button test in Stop Point 2 is blocked.
 
-After applying, run the RLS verification query:
-```sql
-SELECT tablename, policyname, cmd, roles
-FROM pg_policies
-WHERE schemaname = 'public'
-ORDER BY tablename, policyname;
-```
-Expected: 10 tables, all with explicit per-operation policies. No catch-all writes.
+### Supabase SQL migrations (applied, for the record)
+Both `auth-trigger.sql` and `rls.sql` were applied successfully (33 policies confirmed).
+No further action needed unless schema changes require re-running.
 
-## Notes
+---
 
-- `shadcn form` not available as a standalone add in shadcn@4 — built manually using
-  react-hook-form + zod (both installed) in S2.
-- `toast` deprecated in shadcn@4 — replaced with `sonner` (installed).
-- Apple OAuth deferred to v0.2 (documented in PLAN.md).
+## External Manual Actions Required
+
+| Action | Required by | Done? |
+|---|---|---|
+| Add Google OAuth credentials to Supabase Auth → Providers → Google | S4-03 | No |
+| Verify production URL returns 200 on commit `4719059` | S1 sign-off | Assumed yes (operator proceeded) |
+| Monitor Vercel deploys for each Phase A/B/C push | ongoing | — |
+
+---
+
+## Resolved (S1)
+
+- Production 500 `MIDDLEWARE_INVOCATION_FAILED` — fixed; see `docs/DECISIONS.md` (middleware section)
+- Production 404 — fixed by `vercel.json` with explicit `framework: nextjs`
+- Supabase SQL migrations applied; 33 RLS policies confirmed
+- Seeder `.env.local` fix applied (`config({ path: '.env.local' })`)
+- `auth-trigger.sql` made idempotent (`DROP TRIGGER IF EXISTS`)
