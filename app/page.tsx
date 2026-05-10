@@ -1,8 +1,21 @@
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { listFilms } from '@/lib/queries/films'
 import { FeaturedSection } from '@/components/home/featured-section'
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string; next?: string }>
+}) {
+  const params = await searchParams
+  if (params.code) {
+    const next = params.next ?? '/profile/me'
+    redirect(
+      `/auth/callback?code=${encodeURIComponent(params.code)}&next=${encodeURIComponent(next)}`,
+    )
+  }
+
   const [featured, newArrivals, scaryPicks] = await Promise.all([
     listFilms({ limit: 10, offset: 0 }),
     listFilms({ limit: 10, offset: 10 }),
