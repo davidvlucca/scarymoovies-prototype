@@ -1,4 +1,6 @@
-import 'dotenv/config'
+import { config } from 'dotenv'
+// Next.js uses .env.local; dotenv/config defaults to .env — load explicitly.
+config({ path: '.env.local', override: true })
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { films } from '../db/schema'
 import { sql } from 'drizzle-orm'
