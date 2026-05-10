@@ -86,3 +86,12 @@ NEXT_PUBLIC_SITE_URL = https://scarymoovies-prototype.vercel.app
 ## Resolved (Phase A)
 
 - Server Actions bypassed RLS via Drizzle — fixed; all user mutations now use Supabase client (see `docs/DECISIONS.md`)
+
+## Resolved (Phase C — Stop Point 3)
+
+- **Auth email links landing on `/?code=...` → Internal Server Error** — fixed with three-layer defense:
+  1. Middleware redirects `/?code=...` → `/auth/callback?code=...` (Edge layer)
+  2. `app/page.tsx` Server Component checks `searchParams.code` and redirects (Node layer)
+  3. `/auth/callback/route.ts` wraps `exchangeCodeForSession` in try-catch so invalid/fake codes redirect to `/auth/error` instead of crashing
+- **Magic link `emailRedirectTo` missing `?next=/profile/me`** — fixed in `app/actions/auth.ts`
+- **Tier List tab always empty** — fixed by adding `TierPicker` component to the film detail page right column. Implementation: `getCurrentTierEntry` server action reads current tier from `tier_list_entries`; `TierPicker` client component shows S/A/B/C/D/E/F buttons gated on `hasRating`; selecting a tier calls `addToTierList` which upserts `tier_list_entries` (no duplicates). Profile `/profile/me → Tier List` tab now reflects the selection.

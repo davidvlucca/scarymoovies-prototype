@@ -67,6 +67,30 @@ export async function moveTierEntry(
   return addToTierList(filmId, newTier)
 }
 
+export async function getCurrentTierEntry(
+  filmId: number,
+): Promise<{ data: { tier: string } | null }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null }
+
+  const { data: tierList } = await supabase
+    .from('tier_lists')
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (!tierList) return { data: null }
+
+  const { data: entry } = await supabase
+    .from('tier_list_entries')
+    .select('tier')
+    .eq('tier_list_id', (tierList as { id: number }).id)
+    .eq('film_id', filmId)
+    .maybeSingle()
+
+  return { data: entry ? { tier: (entry as { tier: string }).tier } : null }
+}
+
 export async function removeTierEntry(
   filmId: number,
 ): Promise<{ data: true } | { error: string }> {

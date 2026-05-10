@@ -4,9 +4,11 @@ import { getOptionalUser } from '@/lib/auth-guard'
 import { getCurrentUserRating } from '@/app/actions/ratings'
 import { getCurrentUserReview, getFilmReviews } from '@/app/actions/reviews'
 import { getWatchlistStatus } from '@/app/actions/watchlist'
+import { getCurrentTierEntry } from '@/app/actions/tier-list'
 import { FilmHero } from '@/components/film/film-hero'
 import { RatingPanel } from '@/components/film/rating-panel'
 import { WatchlistButton } from '@/components/film/watchlist-button'
+import { TierPicker } from '@/components/film/tier-picker'
 import { ReviewForm } from '@/components/film/review-form'
 import { ReviewList } from '@/components/film/review-list'
 import Link from 'next/link'
@@ -22,18 +24,20 @@ export default async function FilmDetailPage({ params }: Props) {
   const user = await getOptionalUser()
 
   // Fetch user-specific data and reviews in parallel
-  const [ratingResult, reviewResult, watchlistResult, reviewsResult] = user
+  const [ratingResult, reviewResult, watchlistResult, reviewsResult, tierResult] = user
     ? await Promise.all([
         getCurrentUserRating(film.id),
         getCurrentUserReview(film.id),
         getWatchlistStatus(film.id),
         getFilmReviews(film.id),
+        getCurrentTierEntry(film.id),
       ])
     : [
         { data: null } as { data: null },
         { data: null } as { data: null },
         { data: { inWatchlist: false } },
         await getFilmReviews(film.id),
+        { data: null } as { data: null },
       ]
 
   const currentRating =
@@ -49,6 +53,11 @@ export default async function FilmDetailPage({ params }: Props) {
 
   const allReviews =
     'data' in reviewsResult ? reviewsResult.data : []
+
+  const currentTier =
+    tierResult && 'data' in tierResult && tierResult.data
+      ? (tierResult.data.tier as 'S' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F')
+      : null
 
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -85,6 +94,11 @@ export default async function FilmDetailPage({ params }: Props) {
                 <WatchlistButton
                   filmId={film.id}
                   initialInWatchlist={inWatchlist}
+                />
+                <TierPicker
+                  filmId={film.id}
+                  initialTier={currentTier}
+                  hasRating={currentRating !== null}
                 />
               </>
             ) : (
