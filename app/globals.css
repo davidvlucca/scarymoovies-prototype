@@ -1,0 +1,300 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ─── Raw Color Tokens ─────────────────────────────── */
+:root {
+  /* Purple scale */
+  --purple-50:  #ebe6ef;
+  --purple-100: #c0b0cd;
+  --purple-200: #a28ab4;
+  --purple-300: #785492;
+  --purple-400: #5d337d;
+  --purple-500: #35005d;
+  --purple-600: #300055;
+  --purple-700: #260042;
+  --purple-800: #1d0033;
+  --purple-900: #160027;
+
+  /* Red scale */
+  --red-50:  #f1e7e7;
+  --red-100: #d4b5b5;
+  --red-200: #c09292;
+  --red-300: #a36060;
+  --red-400: #914141;
+  --red-500: #751111;
+  --red-600: #6a0f0f;
+  --red-700: #530c0c;
+  --red-800: #400909;
+  --red-900: #310707;
+
+  /* Black scale */
+  --black-50:  #e7e7e7;
+  --black-100: #b4b3b4;
+  --black-200: #8f8e90;
+  --black-300: #5c5b5e;
+  --black-400: #3d3b3e;
+  --black-500: #0c0a0e;
+  --black-600: #0b090d;
+  --black-700: #09070a;
+  --black-800: #070608;
+  --black-900: #050406;
+
+  /* White scale */
+  --white-50:  #fefefe;
+  --white-100: #fcfbfc;
+  --white-200: #faf9fa;
+  --white-300: #f8f6f8;
+  --white-400: #f6f5f7;
+  --white-500: #f4f2f5;
+  --white-600: #dedcdf;
+  --white-700: #adacae;
+  --white-800: #868587;
+  --white-900: #666667;
+
+  /* ─── Font Stacks ─── */
+  --font-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: var(--font-body);
+  --font-mono:    'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* ─── Semantic Tokens ─────────────────────────────── */
+  --bg-primary:          var(--black-500);
+  --bg-surface:          var(--black-600);
+  --bg-elevated:         var(--black-400);
+  --bg-overlay:          var(--purple-900);
+
+  --text-primary:        var(--white-50);
+  --text-secondary:      var(--white-700);
+  --text-muted:          var(--white-900);
+
+  --accent-primary:      var(--purple-400);
+  --accent-hover:        var(--purple-300);
+  --accent-strong:       #785492;
+  --accent-danger:       var(--red-500);
+  --accent-danger-hover: var(--red-400);
+
+  --border-subtle:  rgba(254, 254, 254, 0.08);
+  --border-default: rgba(254, 254, 254, 0.12);
+  --border-strong:  rgba(254, 254, 254, 0.20);
+  --border-focus:   var(--purple-300);
+
+  /* ─── Tier List Scale ─────────────────────────────── */
+  --tier-s: var(--purple-400);
+  --tier-a: var(--purple-300);
+  --tier-b: #6e5474;
+  --tier-c: #9c80a8;
+  --tier-d: var(--black-300);
+  --tier-e: var(--red-400);
+  --tier-f: var(--red-500);
+
+  /* ─── Type Scale ──────────────────────────────────── */
+  --text-display-2xl: 4.5rem;
+  --text-display-xl:  3.75rem;
+  --text-display-lg:  3rem;
+  --text-heading-xl:  2.25rem;
+  --text-heading-lg:  1.875rem;
+  --text-heading-md:  1.5rem;
+  --text-heading-sm:  1.25rem;
+  --text-body-lg:     1.125rem;
+  --text-body-md:     1rem;
+  --text-body-sm:     0.875rem;
+  --text-label:       0.75rem;
+
+  /* ─── Motion Tokens ───────────────────────────────── */
+  --duration-fast:      100ms;
+  --duration-base:      150ms;
+  --duration-moderate:  250ms;
+  --duration-slow:      400ms;
+  --duration-cinematic: 700ms;
+  --ease-default: ease;
+  --ease-enter:   ease-out;
+  --ease-exit:    ease-in;
+  --ease-inout:   ease-in-out;
+
+  /* ─── Radii ───────────────────────────────────────── */
+  --radius-sm:   3px;
+  --radius-md:   6px;
+  --radius:      8px;
+  --radius-lg:   10px;
+  --radius-pill: 9999px;
+
+  /* ─── Shadows ─────────────────────────────────────── */
+  --shadow-sm:     0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  --shadow-card:   0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-popup:  0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-modal:  0 24px 64px rgba(0, 0, 0, 0.7);
+  --shadow-toast:  0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-flyout: 0 16px 40px rgba(0, 0, 0, 0.6);
+
+  /* ─── shadcn/ui CSS Variable Bridge ──────────────── */
+  --background:             var(--black-500);
+  --foreground:             var(--white-50);
+  --card:                   var(--black-600);
+  --card-foreground:        var(--white-50);
+  --popover:                var(--black-400);
+  --popover-foreground:     var(--white-50);
+  --primary:                var(--purple-400);
+  --primary-foreground:     var(--white-50);
+  --secondary:              var(--black-400);
+  --secondary-foreground:   var(--white-50);
+  --muted:                  var(--black-600);
+  --muted-foreground:       var(--white-700);
+  --accent:                 var(--purple-400);
+  --accent-foreground:      var(--white-50);
+  --destructive:            var(--red-500);
+  --destructive-foreground: var(--white-50);
+  --border:                 rgba(254, 254, 254, 0.12);
+  --input:                  rgba(254, 254, 254, 0.08);
+  --ring:                   var(--purple-300);
+  --sidebar:                var(--black-700);
+  --sidebar-foreground:     var(--white-50);
+  --sidebar-primary:        var(--purple-400);
+  --sidebar-primary-foreground: var(--white-50);
+  --sidebar-accent:         var(--black-600);
+  --sidebar-accent-foreground: var(--white-50);
+  --sidebar-border:         rgba(254, 254, 254, 0.08);
+  --sidebar-ring:           var(--purple-300);
+}
+
+/* ─── Tailwind v4 Theme Mapping ───────────────────── */
+@theme inline {
+  --font-body: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --font-sans: var(--font-body);
+
+  --color-bg-primary:    var(--bg-primary);
+  --color-bg-surface:    var(--bg-surface);
+  --color-bg-elevated:   var(--bg-elevated);
+  --color-text-primary:  var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted:    var(--text-muted);
+  --color-accent:        var(--accent-primary);
+  --color-accent-hover:  var(--accent-hover);
+  --color-danger:        var(--accent-danger);
+
+  --color-background:             var(--background);
+  --color-foreground:             var(--foreground);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-foreground);
+  --color-popover:                var(--popover);
+  --color-popover-foreground:     var(--popover-foreground);
+  --color-primary:                var(--primary);
+  --color-primary-foreground:     var(--primary-foreground);
+  --color-secondary:              var(--secondary);
+  --color-secondary-foreground:   var(--secondary-foreground);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-destructive:            var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:                 var(--border);
+  --color-input:                  var(--input);
+  --color-ring:                   var(--ring);
+  --color-sidebar:                var(--sidebar);
+  --color-sidebar-foreground:     var(--sidebar-foreground);
+  --color-sidebar-primary:        var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:         var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:         var(--sidebar-border);
+  --color-sidebar-ring:           var(--sidebar-ring);
+
+  --radius-sm:   var(--radius-sm);
+  --radius-md:   var(--radius-md);
+  --radius-default: var(--radius);
+  --radius-lg:   var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-sm:     var(--shadow-sm);
+  --shadow-card:   var(--shadow-card);
+  --shadow-popup:  var(--shadow-popup);
+  --shadow-modal:  var(--shadow-modal);
+  --shadow-toast:  var(--shadow-toast);
+  --shadow-flyout: var(--shadow-flyout);
+
+  --color-tier-s: var(--tier-s);
+  --color-tier-a: var(--tier-a);
+  --color-tier-b: var(--tier-b);
+  --color-tier-c: var(--tier-c);
+  --color-tier-d: var(--tier-d);
+  --color-tier-e: var(--tier-e);
+  --color-tier-f: var(--tier-f);
+
+  --color-purple-50: var(--purple-50);
+  --color-purple-100: var(--purple-100);
+  --color-purple-200: var(--purple-200);
+  --color-purple-300: var(--purple-300);
+  --color-purple-400: var(--purple-400);
+  --color-purple-500: var(--purple-500);
+  --color-purple-600: var(--purple-600);
+  --color-purple-700: var(--purple-700);
+  --color-purple-800: var(--purple-800);
+  --color-purple-900: var(--purple-900);
+
+  --color-red-50: var(--red-50);
+  --color-red-100: var(--red-100);
+  --color-red-200: var(--red-200);
+  --color-red-300: var(--red-300);
+  --color-red-400: var(--red-400);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+  --color-red-700: var(--red-700);
+  --color-red-800: var(--red-800);
+  --color-red-900: var(--red-900);
+
+  --color-black-50: var(--black-50);
+  --color-black-100: var(--black-100);
+  --color-black-200: var(--black-200);
+  --color-black-300: var(--black-300);
+  --color-black-400: var(--black-400);
+  --color-black-500: var(--black-500);
+  --color-black-600: var(--black-600);
+  --color-black-700: var(--black-700);
+  --color-black-800: var(--black-800);
+  --color-black-900: var(--black-900);
+
+  --color-white-50: var(--white-50);
+  --color-white-100: var(--white-100);
+  --color-white-200: var(--white-200);
+  --color-white-300: var(--white-300);
+  --color-white-400: var(--white-400);
+  --color-white-500: var(--white-500);
+  --color-white-600: var(--white-600);
+  --color-white-700: var(--white-700);
+  --color-white-800: var(--white-800);
+  --color-white-900: var(--white-900);
+}
+
+/* ─── Base Reset ──────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
