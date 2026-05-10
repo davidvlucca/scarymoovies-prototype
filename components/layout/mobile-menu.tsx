@@ -1,11 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import type { User } from '@supabase/supabase-js'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
+import { signOut } from '@/app/actions/auth'
 
 interface MobileMenuProps {
   open: boolean
   onClose: () => void
+  user: User | null
 }
 
 const navLinks: { label: string; href: string }[] = [
@@ -15,7 +19,16 @@ const navLinks: { label: string; href: string }[] = [
   { label: 'Collections', href: '/collections' },
 ]
 
-export function MobileMenu({ open, onClose }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, user }: MobileMenuProps) {
+  const router = useRouter()
+
+  async function handleSignOut() {
+    onClose()
+    const result = await signOut()
+    router.push(result.redirectTo)
+    router.refresh()
+  }
+
   return (
     <Sheet open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <SheetContent
@@ -33,6 +46,33 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               {link.label}
             </Link>
           ))}
+
+          {user ? (
+            <>
+              <Link
+                href="/profile/me"
+                onClick={onClose}
+                className="py-4 px-2 text-base uppercase tracking-wide border-b border-border-subtle text-text-secondary hover:text-text-primary transition-colors duration-150"
+              >
+                Profile
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="py-4 px-2 text-base uppercase tracking-wide text-left text-danger hover:opacity-80 transition-opacity duration-150"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/auth/sign-in"
+              onClick={onClose}
+              className="py-4 px-2 text-base uppercase tracking-wide border-b border-border-subtle text-accent hover:opacity-80 transition-opacity duration-150"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
       </SheetContent>
     </Sheet>

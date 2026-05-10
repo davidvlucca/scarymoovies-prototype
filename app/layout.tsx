@@ -4,6 +4,7 @@ import './globals.css'
 import { Navbar } from '@/components/layout/navbar'
 import { Providers } from './providers'
 import { Toaster } from 'sonner'
+import { createClient } from '@/lib/supabase/server'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -16,11 +17,14 @@ export const metadata: Metadata = {
   description: 'The horror movie platform for real fans.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-bg-primary text-text-primary antialiased">
@@ -30,7 +34,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Navbar />
+        <Navbar user={user} />
         <Providers>
           <main id="main-content" className="min-h-screen">
             {children}

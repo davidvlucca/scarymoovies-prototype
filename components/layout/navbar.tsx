@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Menu } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 import { MobileMenu } from './mobile-menu'
+import { UserMenu } from '@/components/auth/user-menu'
 
 const navLinks: { label: string; href: string }[] = [
   { label: 'Home', href: '/' },
@@ -12,14 +14,12 @@ const navLinks: { label: string; href: string }[] = [
   { label: 'Collections', href: '/collections' },
 ]
 
-export function Navbar() {
+export function Navbar({ user }: { user: User | null }) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
     <>
-      <header
-        className="sticky top-0 z-50 h-14 px-4 md:px-8 flex items-center justify-between bg-bg-surface border-b border-border-subtle"
-      >
+      <header className="sticky top-0 z-50 h-14 px-4 md:px-8 flex items-center justify-between bg-bg-surface border-b border-border-subtle">
         {/* Wordmark */}
         <Link
           href="/"
@@ -41,10 +41,20 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Right side: auth avatar placeholder (desktop) + hamburger (mobile) */}
+        {/* Right side: auth controls (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-3">
-          {/* Auth avatar placeholder — populated in S4-04 */}
-          <div className="w-8 h-8 hidden md:block" aria-hidden="true" />
+          <div className="hidden md:flex items-center">
+            {user ? (
+              <UserMenu user={user} />
+            ) : (
+              <Link
+                href="/auth/sign-in"
+                className="text-sm text-text-secondary hover:text-text-primary transition-colors duration-150 uppercase tracking-wide"
+              >
+                Sign in
+              </Link>
+            )}
+          </div>
 
           {/* Mobile hamburger */}
           <button
@@ -58,7 +68,7 @@ export function Navbar() {
         </div>
       </header>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} user={user} />
     </>
   )
 }
