@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -42,7 +42,7 @@ const TIER_COLORS: Record<Tier, string> = {
 }
 
 const BTN = [
-  'w-5 h-5 rounded text-[10px] font-bold leading-none',
+  'w-7 h-7 rounded text-[11px] font-bold leading-none',
   'bg-bg-elevated text-text-secondary',
   'hover:text-text-primary transition-colors duration-100',
   'disabled:opacity-30 disabled:cursor-not-allowed',
@@ -54,6 +54,12 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
   const [entries, setEntries] = useState<TierEntry[]>(initialEntries)
   const [isPending, startTransition] = useTransition()
   const [pendingId, setPendingId] = useState<number | null>(null)
+
+  // Sync local state when server re-renders after router.refresh() so that
+  // cross-tier moves appear in the destination row without an extra navigation.
+  useEffect(() => {
+    setEntries(initialEntries)
+  }, [initialEntries])
 
   const tierIdx = TIERS.indexOf(tier)
   const prevTier = tierIdx > 0 ? TIERS[tierIdx - 1] : null
@@ -162,12 +168,12 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
                   </span>
                 </Link>
 
-                {/* Movement controls (owner only): always visible on mobile, hover-reveal on desktop) */}
+                {/* Movement controls (owner only): always visible on mobile, hover-reveal on desktop */}
                 {isOwner && (
-                  <div className="flex gap-px transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
+                  <div className="flex gap-1 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
                     <button
                       type="button"
-                      title={prevTier ? `Move to tier ${prevTier}` : 'Already top tier'}
+                      aria-label={prevTier ? `Move ${entry.film.title} to tier ${prevTier}` : `${entry.film.title} is already in the top tier`}
                       disabled={!prevTier || isPending}
                       onClick={() => prevTier && handleTierMove(entry.film_id, prevTier)}
                       className={BTN}
@@ -176,7 +182,7 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
                     </button>
                     <button
                       type="button"
-                      title="Move left"
+                      aria-label={`Move ${entry.film.title} left`}
                       disabled={isFirst || isPending}
                       onClick={() => handleReorder(entry.film_id, 'left')}
                       className={BTN}
@@ -185,7 +191,7 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
                     </button>
                     <button
                       type="button"
-                      title="Remove"
+                      aria-label={`Remove ${entry.film.title} from tier list`}
                       disabled={isPending}
                       onClick={() => handleRemove(entry.film_id)}
                       className={BTN}
@@ -194,7 +200,7 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
                     </button>
                     <button
                       type="button"
-                      title="Move right"
+                      aria-label={`Move ${entry.film.title} right`}
                       disabled={isLast || isPending}
                       onClick={() => handleReorder(entry.film_id, 'right')}
                       className={BTN}
@@ -203,7 +209,7 @@ export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {
                     </button>
                     <button
                       type="button"
-                      title={nextTier ? `Move to tier ${nextTier}` : 'Already bottom tier'}
+                      aria-label={nextTier ? `Move ${entry.film.title} to tier ${nextTier}` : `${entry.film.title} is already in the bottom tier`}
                       disabled={!nextTier || isPending}
                       onClick={() => nextTier && handleTierMove(entry.film_id, nextTier)}
                       className={BTN}

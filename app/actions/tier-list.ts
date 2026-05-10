@@ -67,11 +67,18 @@ export async function moveTierEntry(
   return addToTierList(filmId, newTier)
 }
 
+const VALID_TIERS = ['S', 'A', 'B', 'C', 'D', 'E', 'F'] as const
+
 export async function reorderTierEntry(
   filmId: number,
   tier: 'S' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F',
   direction: 'left' | 'right',
 ): Promise<{ data: true } | { error: string }> {
+  // Server-side input validation — callers must not rely on client-side guards
+  if (!Number.isInteger(filmId) || filmId <= 0) return { error: 'Invalid film ID.' }
+  if (!(VALID_TIERS as readonly string[]).includes(tier)) return { error: 'Invalid tier.' }
+  if (direction !== 'left' && direction !== 'right') return { error: 'Invalid direction.' }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Unauthorized' }
@@ -103,17 +110,39 @@ export async function reorderTierEntry(
   const cur = rows[idx]
   const swap = rows[swapIdx]
 
+  // 3-step swap using sentinel position (-1 is never a real position).
+  // This avoids duplicate positions at any step even if a unique constraint exists,
+  // and allows explicit rollback if a step fails.
+
+  // Step 1: park cur at sentinel
   const { error: e1 } = await supabase
     .from('tier_list_entries')
-    .update({ position: swap.position })
+    .update({ position: -1 })
     .eq('id', cur.id)
   if (e1) return { error: e1.message }
 
+  // Step 2: move swap into cur's original position
   const { error: e2 } = await supabase
     .from('tier_list_entries')
     .update({ position: cur.position })
     .eq('id', swap.id)
-  if (e2) return { error: e2.message }
+  if (e2) {
+    // Roll back step 1: restore cur to its original position
+    await supabase.from('tier_list_entries').update({ position: cur.position }).eq('id', cur.id)
+    return { error: 'Reorder failed. Please try again.' }
+  }
+
+  // Step 3: move cur from sentinel to swap's original position
+  const { error: e3 } = await supabase
+    .from('tier_list_entries')
+    .update({ position: swap.position })
+    .eq('id', cur.id)
+  if (e3) {
+    // Roll back steps 1 and 2: restore both to their original positions
+    await supabase.from('tier_list_entries').update({ position: swap.position }).eq('id', swap.id)
+    await supabase.from('tier_list_entries').update({ position: cur.position }).eq('id', cur.id)
+    return { error: 'Reorder failed. Please try again.' }
+  }
 
   return { data: true as const }
 }
