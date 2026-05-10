@@ -1,13 +1,9 @@
 'use server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import type { watchlistItems } from '@/db/schema'
+import { FilmIdSchema } from '@/lib/validation/schemas'
 
 type WatchlistItem = typeof watchlistItems.$inferSelect
-
-const FilmIdSchema = z.object({
-  filmId: z.number().int().positive(),
-})
 
 export async function toggleWatchlist(
   filmId: number,

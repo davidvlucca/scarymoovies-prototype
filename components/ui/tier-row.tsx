@@ -28,13 +28,13 @@ type Props = {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  S: 'var(--tier-s, #ff4d4d)',
-  A: 'var(--tier-a, #ff944d)',
-  B: 'var(--tier-b, #ffd24d)',
-  C: 'var(--tier-c, #a8d44d)',
-  D: 'var(--tier-d, #4da8d4)',
-  E: 'var(--tier-e, #4d4dd4)',
-  F: 'var(--tier-f, #9b4dd4)',
+  S: 'var(--tier-s)',
+  A: 'var(--tier-a)',
+  B: 'var(--tier-b)',
+  C: 'var(--tier-c)',
+  D: 'var(--tier-d)',
+  E: 'var(--tier-e)',
+  F: 'var(--tier-f)',
 }
 
 export function TierRow({ tier, entries: initialEntries, isOwner }: Props) {

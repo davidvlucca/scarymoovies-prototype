@@ -1,27 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { z } from 'zod'
+import { RateSchema } from '@/lib/validation/schemas'
 
-// Mirror of the RateSchema in app/actions/ratings.ts
-const RateSchema = z.object({
-  filmId: z.number().int().positive(),
-  score: z.number().min(0).max(5).refine(
-    (v) => v * 2 === Math.floor(v * 2),
-    { message: 'Score must be in 0.5 increments' },
-  ),
-  tier: z.enum(['S', 'A', 'B', 'C', 'D', 'E', 'F']).optional(),
-})
-
-describe('RateSchema validation', () => {
+describe('RateSchema', () => {
   it('accepts valid score and filmId', () => {
     expect(RateSchema.safeParse({ filmId: 1, score: 4.5 }).success).toBe(true)
   })
 
-  it('accepts score of 0', () => {
+  it('accepts boundary scores 0 and 5', () => {
     expect(RateSchema.safeParse({ filmId: 1, score: 0 }).success).toBe(true)
+    expect(RateSchema.safeParse({ filmId: 1, score: 5 }).success).toBe(true)
   })
 
-  it('accepts score of 5', () => {
-    expect(RateSchema.safeParse({ filmId: 1, score: 5 }).success).toBe(true)
+  it('accepts missing tier (optional)', () => {
+    expect(RateSchema.safeParse({ filmId: 1, score: 2.5 }).success).toBe(true)
   })
 
   it('rejects non-0.5-increment scores', () => {

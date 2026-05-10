@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { z } from 'zod'
-
-const ReviewSchema = z.object({
-  filmId: z.number().int().positive(),
-  body: z.string().min(1, 'Review cannot be empty').max(5000, 'Review is too long'),
-})
+import { ReviewSchema } from '@/lib/validation/schemas'
 
 describe('ReviewSchema', () => {
   it('accepts valid review', () => {

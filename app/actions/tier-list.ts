@@ -1,11 +1,6 @@
 'use server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-
-const TierEntrySchema = z.object({
-  filmId: z.number().int().positive(),
-  tier: z.enum(['S', 'A', 'B', 'C', 'D', 'E', 'F']),
-})
+import { TierEntrySchema } from '@/lib/validation/schemas'
 
 async function getOrCreateTierList(
   supabase: Awaited<ReturnType<typeof createClient>>,

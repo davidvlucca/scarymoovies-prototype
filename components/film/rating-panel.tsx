@@ -30,39 +30,21 @@ export function RatingPanel({ filmId, initialRating }: Props) {
   }
 
   return (
-    <div
-      className="rounded-lg border p-4 md:p-5 space-y-4"
-      style={{
-        background: 'var(--bg-surface)',
-        borderColor: 'var(--border-subtle)',
-      }}
-    >
+    <div className="rounded-lg border border-border-subtle p-4 md:p-5 space-y-4 bg-bg-surface">
       {/* Current rating display */}
       <div>
-        <p
-          className="text-xs uppercase tracking-widest mb-1"
-          style={{ color: 'var(--text-muted)' }}
-        >
+        <p className="text-xs uppercase tracking-widest mb-1 text-text-muted">
           Your Rating
         </p>
         {currentScore !== null ? (
-          <p
-            className="text-2xl font-black tabular-nums"
-            style={{ color: 'var(--accent-primary)' }}
-          >
+          <p className="text-2xl font-black tabular-nums text-accent">
             {currentScore.toFixed(1)}
-            <span
-              className="text-sm font-normal ml-1"
-              style={{ color: 'var(--text-muted)' }}
-            >
+            <span className="text-sm font-normal ml-1 text-text-muted">
               / 5
             </span>
           </p>
         ) : (
-          <p
-            className="text-sm"
-            style={{ color: 'var(--text-secondary)' }}
-          >
+          <p className="text-sm text-text-secondary">
             Rate this film
           </p>
         )}
@@ -80,20 +62,12 @@ export function RatingPanel({ filmId, initialRating }: Props) {
               onClick={() => handleRate(score)}
               aria-label={`Rate ${score}`}
               aria-pressed={isSelected}
-              className="h-9 rounded text-xs font-semibold tabular-nums border transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2"
-              style={
+              className={[
+                'h-9 rounded text-xs font-semibold tabular-nums border transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2',
                 isSelected
-                  ? {
-                      background: 'var(--accent-primary)',
-                      borderColor: 'var(--accent-primary)',
-                      color: 'var(--text-primary)',
-                    }
-                  : {
-                      background: 'var(--bg-elevated)',
-                      borderColor: 'var(--border-subtle)',
-                      color: 'var(--text-secondary)',
-                    }
-              }
+                  ? 'bg-accent border-accent text-text-primary'
+                  : 'bg-bg-elevated border-border-subtle text-text-secondary',
+              ].join(' ')}
             >
               {score.toFixed(score % 1 === 0 ? 0 : 1)}
             </button>
@@ -102,10 +76,7 @@ export function RatingPanel({ filmId, initialRating }: Props) {
       </div>
 
       {isPending && (
-        <p
-          className="text-xs"
-          style={{ color: 'var(--text-muted)' }}
-        >
+        <p className="text-xs text-text-muted">
           Saving…
         </p>
       )}

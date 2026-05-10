@@ -1,17 +1,9 @@
 'use server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import type { reviews } from '@/db/schema'
+import { ReviewSchema } from '@/lib/validation/schemas'
 
 type Review = typeof reviews.$inferSelect
-
-const ReviewSchema = z.object({
-  filmId: z.number().int().positive(),
-  body: z
-    .string()
-    .min(1, 'Review cannot be empty')
-    .max(5000, 'Review is too long'),
-})
 
 export async function upsertUserReview(
   filmId: number,

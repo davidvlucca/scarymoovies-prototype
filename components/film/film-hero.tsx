@@ -75,14 +75,8 @@ export function FilmHero({ film }: Props) {
                 sizes="(max-width: 768px) 112px, 160px"
               />
             ) : (
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ background: 'var(--bg-elevated)' }}
-              >
-                <span
-                  className="text-xs uppercase tracking-widest"
-                  style={{ color: 'var(--text-muted)' }}
-                >
+              <div className="absolute inset-0 flex items-center justify-center bg-bg-elevated">
+                <span className="text-xs uppercase tracking-widest text-text-muted">
                   No Image
                 </span>
               </div>
@@ -91,17 +85,11 @@ export function FilmHero({ film }: Props) {
 
           {/* Title + meta */}
           <div className="flex-1 min-w-0 pb-1">
-            <h1
-              className="text-3xl md:text-5xl font-black uppercase leading-none tracking-tight break-words"
-              style={{ color: 'var(--text-primary)' }}
-            >
+            <h1 className="text-3xl md:text-5xl font-black uppercase leading-none tracking-tight break-words text-text-primary">
               {film.title}
             </h1>
             {meta && (
-              <p
-                className="mt-2 text-sm uppercase tracking-widest"
-                style={{ color: 'var(--text-muted)' }}
-              >
+              <p className="mt-2 text-sm uppercase tracking-widest text-text-muted">
                 {meta}
               </p>
             )}
@@ -110,10 +98,7 @@ export function FilmHero({ film }: Props) {
 
         {/* Overview */}
         {film.overview && (
-          <p
-            className="mt-6 max-w-3xl text-base leading-relaxed"
-            style={{ color: 'var(--text-secondary)' }}
-          >
+          <p className="mt-6 max-w-3xl text-base leading-relaxed text-text-secondary">
             {film.overview}
           </p>
         )}

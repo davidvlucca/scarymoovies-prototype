@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { z } from 'zod'
-
-const FilmIdSchema = z.object({
-  filmId: z.number().int().positive(),
-})
+import { FilmIdSchema } from '@/lib/validation/schemas'
 
 describe('FilmIdSchema', () => {
   it('accepts a positive integer', () => {

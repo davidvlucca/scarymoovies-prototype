@@ -1,18 +1,9 @@
 'use server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import type { ratings } from '@/db/schema'
+import { RateSchema } from '@/lib/validation/schemas'
 
 type Rating = typeof ratings.$inferSelect
-
-const RateSchema = z.object({
-  filmId: z.number().int().positive(),
-  score: z.number().min(0).max(5).refine(
-    (v) => v * 2 === Math.floor(v * 2),
-    { message: 'Score must be in 0.5 increments' },
-  ),
-  tier: z.enum(['S', 'A', 'B', 'C', 'D', 'E', 'F']).optional(),
-})
 
 export async function rateFilm(
   filmId: number,

@@ -51,7 +51,7 @@ export default async function FilmDetailPage({ params }: Props) {
     'data' in reviewsResult ? reviewsResult.data : []
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
+    <div className="min-h-screen bg-bg-primary">
       <FilmHero film={film} />
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 mt-10 pb-20">
@@ -62,18 +62,10 @@ export default async function FilmDetailPage({ params }: Props) {
             {user ? (
               <ReviewForm filmId={film.id} initialReview={currentReviewBody} />
             ) : (
-              <div
-                className="rounded-lg border px-4 py-5 text-sm"
-                style={{
-                  background: 'var(--bg-surface)',
-                  borderColor: 'var(--border-subtle)',
-                  color: 'var(--text-secondary)',
-                }}
-              >
+              <div className="rounded-lg border border-border-subtle px-4 py-5 text-sm bg-bg-surface text-text-secondary">
                 <Link
                   href="/auth/sign-in"
-                  className="font-semibold underline underline-offset-2 transition-colors"
-                  style={{ color: 'var(--accent-primary)' }}
+                  className="font-semibold underline underline-offset-2 transition-colors text-accent"
                 >
                   Sign in
                 </Link>{' '}
@@ -96,24 +88,14 @@ export default async function FilmDetailPage({ params }: Props) {
                 />
               </>
             ) : (
-              <div
-                className="rounded-lg border px-4 py-5 text-sm space-y-2"
-                style={{
-                  background: 'var(--bg-surface)',
-                  borderColor: 'var(--border-subtle)',
-                }}
-              >
-                <p
-                  className="text-xs uppercase tracking-widest"
-                  style={{ color: 'var(--text-muted)' }}
-                >
+              <div className="rounded-lg border border-border-subtle px-4 py-5 text-sm space-y-2 bg-bg-surface">
+                <p className="text-xs uppercase tracking-widest text-text-muted">
                   Rate &amp; Track
                 </p>
-                <p style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-text-secondary">
                   <Link
                     href="/auth/sign-in"
-                    className="font-semibold underline underline-offset-2"
-                    style={{ color: 'var(--accent-primary)' }}
+                    className="font-semibold underline underline-offset-2 text-accent"
                   >
                     Sign in
                   </Link>{' '}

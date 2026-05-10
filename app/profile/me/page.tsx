@@ -4,7 +4,6 @@ import { users, reviews, watchlistItems, films, tierLists, tierListEntries } fro
 import { eq, desc, asc } from 'drizzle-orm'
 import { getTableColumns } from 'drizzle-orm'
 import { listCollections } from '@/lib/queries/collections'
-import { getUserRatings } from '@/lib/queries/ratings'
 import { ProfileHeader } from '@/components/profile/profile-header'
 import { ProfileTabs } from '@/components/profile/profile-tabs'
 
@@ -45,7 +44,6 @@ export default async function ProfileMePage() {
       .orderBy(desc(watchlistItems.added_at))
       .limit(50),
     listCollections({ userId: authUser.id }),
-    getUserRatings(authUser.id),
   ])
 
   // Load tier list entries for this user
