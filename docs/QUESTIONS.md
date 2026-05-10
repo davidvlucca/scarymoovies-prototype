@@ -4,20 +4,32 @@
 
 ## Blocking
 
-_None at this time. S1 is fully approved._
+### Google OAuth credentials required for Stop Point 2 (S4-03)
+
+Stop Point 2 requires Google OAuth to be verified end-to-end (signup via Google → `public.users` row created). This is **blocked** until the operator adds credentials to Supabase.
+
+**Steps required (manual — Claude cannot do these):**
+1. Google Cloud Console → APIs & Services → Credentials → Create OAuth Client ID (Web application)
+2. Add Authorized redirect URI: `https://jtanekyzfvmytcassmpj.supabase.co/auth/v1/callback`
+3. Supabase dashboard → Authentication → Providers → Google → enter Client ID + Client Secret → Enable
+4. Remove the `disabled` prop from the Google button in `app/auth/sign-in/page.tsx` (line ~88)
+
+**Code status:** `signInWithGoogle()` action is complete in `app/actions/auth.ts`. The button exists on the sign-in page. Only the dashboard credentials and the `disabled` prop removal remain.
+
+Phase C must not start until this is resolved OR the operator explicitly defers Google OAuth testing to a later phase.
 
 ---
 
 ## Non-Blocking Follow-Ups
 
-### Google OAuth credentials (S4-03)
-S4-03 requires Google Cloud OAuth Client ID + Secret added to the Supabase Auth dashboard.
-This is a manual step by the operator — not a code task.
-S4-01 and S4-02 can proceed without it; only the Google OAuth button test in Stop Point 2 is blocked.
-
 ### Supabase SQL migrations (applied, for the record)
 Both `auth-trigger.sql` and `rls.sql` were applied successfully (33 policies confirmed).
 No further action needed unless schema changes require re-running.
+
+### `/profile/me` is a placeholder until S5-05
+After email verification, users land on `/profile/me` which currently shows only their email address.
+The full profile (tier list, reviews, watchlist, collections tabs) is implemented in S5-05 (Phase C).
+This is explicitly documented as a temporary state — not a bug.
 
 ---
 
@@ -25,7 +37,11 @@ No further action needed unless schema changes require re-running.
 
 | Action | Required by | Done? |
 |---|---|---|
-| Add Google OAuth credentials to Supabase Auth → Providers → Google | S4-03 | No |
+| Add Google OAuth credentials to Supabase Auth → Providers → Google | Stop Point 2 | **No — BLOCKING** |
+| Remove `disabled` from Google button in `app/auth/sign-in/page.tsx` | Stop Point 2 | No (after above) |
+| Verify signup → email → `/profile/me` flow in browser | Stop Point 2 | Pending operator |
+| Verify login / logout in browser | Stop Point 2 | Pending operator |
+| Verify password reset email + complete in browser | Stop Point 2 | Pending operator |
 | Verify production URL returns 200 on commit `4719059` | S1 sign-off | Assumed yes (operator proceeded) |
 | Monitor Vercel deploys for each Phase A/B/C push | ongoing | — |
 
@@ -38,3 +54,7 @@ No further action needed unless schema changes require re-running.
 - Supabase SQL migrations applied; 33 RLS policies confirmed
 - Seeder `.env.local` fix applied (`config({ path: '.env.local' })`)
 - `auth-trigger.sql` made idempotent (`DROP TRIGGER IF EXISTS`)
+
+## Resolved (Phase A)
+
+- Server Actions bypassed RLS via Drizzle — fixed; all user mutations now use Supabase client (see `docs/DECISIONS.md`)

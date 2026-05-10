@@ -15,7 +15,12 @@
 ### Google OAuth requires manual Supabase dashboard step
 **Decision:** Google OAuth credentials (Client ID + Secret) must be added to Supabase Auth → Providers → Google by the human operator.
 **Why:** Claude cannot access the Supabase or Google Cloud dashboards directly.
-**Consequence:** S4-03 is blocked until this is done. S4-01/S4-02 can proceed independently.
+**Consequence:** S4-03 is blocked until this is done. S4-01/S4-02 can proceed independently. The Google button on `/auth/sign-in` is `disabled` until credentials are confirmed. Stop Point 2 is not fully approved until Google OAuth is verified.
+
+### Signup email verification lands on `/profile/me` placeholder
+**Decision:** `signUp()` sets `emailRedirectTo` to `${origin}/auth/callback?next=/profile/me`. After clicking the verification email, users land on `/profile/me`.
+**Why:** PLAN.md Stop Point 2 requires "signup → email verification → profile lands." `/profile/me` is a minimal protected placeholder (shows user email) until S5-05 implements the full profile.
+**Consequence:** After confirming email, the user sees a minimal page. Full profile UI arrives in Phase C. This is expected — document as temporary state, not a bug.
 
 ---
 

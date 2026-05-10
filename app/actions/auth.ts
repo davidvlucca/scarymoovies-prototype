@@ -33,7 +33,7 @@ export async function signUp(
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${origin}/auth/callback` },
+    options: { emailRedirectTo: `${origin}/auth/callback?next=/profile/me` },
   })
 
   if (error) return { error: error.message }
