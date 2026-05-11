@@ -42,7 +42,7 @@ const TIER_COLORS: Record<Tier, string> = {
 }
 
 const BTN = [
-  'w-7 h-7 rounded text-[11px] font-bold leading-none',
+  'w-9 h-9 rounded text-[11px] font-bold leading-none',
   'bg-bg-elevated text-text-secondary',
   'hover:text-text-primary transition-colors duration-100',
   'disabled:opacity-30 disabled:cursor-not-allowed',
